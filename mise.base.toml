@@ -1,0 +1,32 @@
+[tools]
+uv = "latest"
+dprint = "latest"
+prek = "latest"
+shfmt = "3"
+actionlint = "1"
+"pipx:zizmor" = "1"
+shellcheck = "0.10.0"
+"aqua:suzuki-shunsuke/ghalint" = "1"
+"aqua:suzuki-shunsuke/pinact" = "3"
+
+[hooks]
+postinstall = "if [ -z \"${CI:-}\" ]; then prek install -f; fi"
+
+[tasks."fmt:base"]
+description = "Format with dprint and shfmt"
+run = [
+  "dprint fmt",
+  "shfmt -w .",
+]
+
+[tasks."lint:base"]
+description = "Lint with dprint, shfmt, shellcheck, actionlint, zizmor, ghalint, pinact"
+run = [
+  "dprint check",
+  "shfmt -d .",
+  "find . -name '*.sh' -exec shellcheck {} +",
+  "actionlint",
+  "zizmor .",
+  "ghalint run",
+  "pinact run",
+]
